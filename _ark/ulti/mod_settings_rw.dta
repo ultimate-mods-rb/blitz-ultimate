@@ -24,7 +24,7 @@
       speedmod
    ))
    (save_settings
-      {print_ship "attempting to save mod settings"}
+      {print "attempting to save mod settings"}
       {do
          ($array {array 0})
          ($controller_mapping {save_data get_controller_mapping})
@@ -32,37 +32,37 @@
             {push_back $array {array ($s {eval_var $s})}}
          }
          {write_file MOD_SETTINGS_PATH $array}
-         {print_ship "mod settings saved"}
+         {print "mod settings saved"}
       }
    )
    (load_settings
       {cond
          ({file_exists MOD_SETTINGS_PATH}
-            {print_ship "attempting to load mod settings"}
+            {print "attempting to load mod settings"}
             {do
                ($array {read_file MOD_SETTINGS_PATH})
                {foreach $s [vars]
                   {do
                      ($var {find_exists $array $s})
                      {if $var
-                        {print_ship $var}
+                        {print $var}
                         {set_var $s {elem $var 1}}
                      }
                   }
                }
-               {print_ship "mod settings loaded"}
+               {print "mod settings loaded"}
             }
          )
          ({file_exists OLD_MOD_SETTINGS_PATH}
-            {print_ship "attempting to load old mod settings"}
+            {print "attempting to load old mod settings"}
             {do
                ($array {read_file OLD_MOD_SETTINGS_PATH})
                {run "ulti/old_mod_settings_r.dta"}
-               {print_ship "old mod settings loaded"}
+               {print "old mod settings loaded"}
             }
          )
          (TRUE
-            {print_ship "no mod settings found!"}
+            {print "no mod settings found!"}
             {set $no_settings_file TRUE}
          )
       }

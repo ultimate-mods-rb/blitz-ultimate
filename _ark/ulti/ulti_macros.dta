@@ -39,3 +39,21 @@
    #define MOD_SETTINGS_PATH ("GAME:/ulti_settings.dta")
    #define OLD_MOD_SETTINGS_PATH ("GAME:/ulti_settings.ini")
 #endif
+
+#define SCREENSHOT_ACTION (
+   (kPad_3ds_R
+      {unless [screenshot_taken]
+         {set [screenshot_taken] TRUE}
+         {rnd screen_dump_unique
+            {sprint
+               $screenshot_path
+               {{loading_screen get_song} short_name}
+            }
+         }
+         {{results_shared_panel find InlineHelp.ihp} set_action_token
+            kPad_3ds_R
+            screenshot_taken
+         }
+      }
+   )
+)

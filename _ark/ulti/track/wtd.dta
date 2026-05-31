@@ -1,0 +1,110 @@
+(WorldTrackDir
+   (types
+      (wtd
+         (change_proxies
+            {set $wtd $this}
+
+            {$hud set song_state {object song_state.ep}} 
+            {$hud set player_state {object player_state.ep}}
+
+            {$this load_gems}
+
+            {new Object
+               player_state_callbacks
+               (end_song
+                  {if {exists check_pass}
+                     {delete check_pass}
+                  }
+               )
+               (gem_hit
+                  ($track_index $bonus $fire $mine $letter $crit $lane)
+                  {unless {exists check_pass} {$this gen_task}}
+                  {++ [note_streak]}
+                  {$this update_lbl}
+               )
+               (miss
+                  ($track_index $miss_track_type $lane)
+                  {$this on_mp}
+               )
+               (on_mp
+                  {set [note_streak] 0}
+                  {$this update_lbl}
+               )
+               (gen_task
+                  {thread_task kTaskBeats
+                     (name check_pass)
+                     (script
+                        {with $wtd
+                           {do
+                              ($per {player_state.ep get blitz_percentage})
+                              {if {> $prevper $per}
+                                 {player_state_callbacks on_mp}
+                              }
+                              {set $prevper $per}
+                           }
+                        }
+                        {$task sleep 0.0001}
+                        {$task loop}
+                     )
+                  }
+               )
+               (update_lbl {{$hud find streak.lbl} set_int [note_streak] TRUE})
+               (note_streak)
+            }
+            {player_state.ep add_sink player_state_callbacks (end_song gem_hit miss)}
+
+            {with track
+               {switch $camera_angle
+                  (1
+                     {camera_blitz.anim iterate_refs $ref
+                        {if {$ref is_a FlowAnimate}
+                           {delete $ref}
+                        }
+                     }
+                  )
+                  (2
+                     {camera_blitz.anim iterate_refs $ref
+                        {if {$ref is_a FlowAnimate}
+                           {delete $ref}
+                        }
+                     }
+                     {camera_song_intro.anim iterate_refs $ref
+                        {if {$ref is_a FlowAnimate} ; r2:FlowAnimate:camera.flow
+                           {$ref set anim {object camera_blitz.anim}}
+                        }
+                     }
+                  )
+               }
+            }
+
+            {if $disco
+               {$this iterate PostProc $pp
+                  {with $pp
+                     {set [noise_intensity] 5.0}
+                     {set [bloom_threshold] 1.5}
+                     {set [bloom_intensity] 1.25} ; set to 2 for a better time
+                     {set [bloom_streak] TRUE}
+                     {set [bloom_streak_attenuation] 0.95}
+                     {set [bloom_streak_angle] 45.0}
+                     {set [hue] 150}
+                     {set [saturation] 100}
+                     {set [brightness] 30}
+                     {set [contrast] 50}
+                     {set [lightness] 20}
+                  }
+               }
+               {new Object
+                  disco_start
+                  (gem_hit
+                     {frenzy.flow set toggle_running 1}
+                     {player_state.ep remove_sink $this}
+                  )
+               }
+               {player_state.ep add_sink disco_start (gem_hit)}
+            }
+         )
+         (post_load {$this apply_gems})
+         #include gems/gems_mgr.dta
+      )
+   )
+)

@@ -1,0 +1,223 @@
+(PanelDir
+   (types
+      (hud
+         (pb 0)
+         (song_state '')
+         (player_state '')
+         (change_proxies ; on load
+            {set $hud $this}
+
+            {if {&& $show_pb {find_exists $scoresArray {{loading_screen get_song} id}}}
+               {set [pb] {elem {find $scoresArray {{loading_screen get_song} id}} 1}}
+            }
+
+            {new ObjectDir temp_dir}
+            {temp_dir set proxy_file "../ulti/track/track_tex.milo"}
+            {reserve_to_fit temp_dir {Sparks.tex dir} 0}
+            {merge_dirs temp_dir {Sparks.tex dir} kMergeMerge}
+            {delete temp_dir}
+
+            {new UISlider progress_bar.sld}
+            {progress_bar.sld set slider_resource progress_bar}
+            {progress_bar.sld set_num_steps 1000}
+            {progress_bar.sld set_local_pos -115.00 -1.00 -89.00}
+            {progress_bar.sld set_trans_parent band_meter_hud}
+            {progress_bar.sld set_local_rot 0 -90 0}
+
+            {new UILabel streak.lbl}
+            {streak.lbl copy {error_popup_panel find continue.lbl} kCopyDeep}
+            {streak.lbl set_int 0}
+            {streak.lbl set_local_pos -108 0.00 -120.00}
+            {streak.lbl set_trans_parent band_meter_hud}
+            {streak.lbl set (styles 0 font_resource) eagle_book_blitzlabel}
+            {streak.lbl set (styles 0 text_size) 12}
+            {hud.grp add_object streak.lbl}
+
+            {new UILabel timer.lbl}
+            {timer.lbl copy {error_popup_panel find continue.lbl} kCopyDeep}
+            {timer.lbl set_token_fmt " "}
+            {timer.lbl set_local_pos -123 0.00 -235.00}
+            {timer.lbl set_trans_parent band_meter_hud}
+            {timer.lbl set (styles 0 font_resource) eagle_book_blitzlabel}
+            {timer.lbl set alignment kMiddleLeft}
+            {hud.grp add_object timer.lbl}
+
+            {new TransAnim timer.tnm}
+            {timer.tnm set_trans timer.lbl}
+            {timer.tnm set_trans_spline TRUE}
+            {timer.tnm add_trans_key -123.00 0.00 -250.00 0}
+            {timer.tnm add_trans_key -123.00 0.00 -235.00 1}
+            {timer.tnm set_frame 0}
+
+            {if {&& [pb] {! {is_online}}}
+               {new UILabel pb.lbl}
+               {pb.lbl copy {error_popup_panel find error.lbl} kCopyDeep}
+               {pb.lbl set_token_fmt new_pb}
+               {pb.lbl set (styles 0 font_resource) eagle_book_blitzlabel}
+               {pb.lbl set_trans_parent dynamic_leaderboard}
+               {pb.lbl set_local_scale 2.5 2.5 2.5}
+               {hud.grp add_object pb.lbl}
+
+               {new TransAnim pb.tnm}
+               {pb.tnm set_trans pb.lbl}
+               {pb.tnm set_trans_spline TRUE}
+               {pb.tnm add_trans_key 600.00 0.00 300.00 0}
+               {pb.tnm add_trans_key -200.00 0.00 300.00 0.10}
+               {pb.tnm add_trans_key 600.00 0.00 300.00 1}
+               {pb.tnm set_frame 0}
+            }
+
+            {new UILabel inputs.lbl}
+            {inputs.lbl copy {error_popup_panel find continue.lbl} kCopyDeep}
+            {inputs.lbl set_token_fmt " "}
+            {inputs.lbl set_local_pos -121 0.00 223.00}
+            {inputs.lbl set_trans_parent band_meter_hud}
+            {inputs.lbl set (styles 0 font_resource) buttons}
+            {inputs.lbl set (styles 0 text_size) 20}
+            {inputs.lbl set alignment kMiddleLeft}
+            {hud.grp add_object inputs.lbl}
+
+            {$this update_item_vis}
+         )
+         (post_load
+            {{band_meter_hud find draw.grp} add_object progress_bar.sld}
+
+            {if {&& [pb] {! {is_online}}}
+               {with dynamic_leaderboard
+                  {foreach $anim (player_range.anim competitor_0_range.anim)
+                     {$anim iterate_refs $ref
+                        {if {$ref is_a FlowSetProperty} {delete $ref}}
+                     }
+                  }
+                  {{competitor_board_0 find name.lbl} set_token_fmt your_best}
+                  {competitor_board_0 set_showing TRUE}
+                  {draw.grp set_showing TRUE}
+                  {{{$this dir} find hud.grp} add_object draw.grp}
+               }
+            }
+
+            {if $hide_hud
+               {delete blitz_points.lbl} ; idk how to stop the anim so i did it like this
+               {score.lbl set_showing FALSE}
+               {hud.grp set_showing FALSE}
+               {{star_board find draw.grp} set_showing FALSE}
+            }
+
+            {if {&& {== {rnd aspect} kLetterboxAspect} {! $letterbox}} ; letterbox or something
+               {rnd set_aspect kRegularAspect}
+               {star_board          set_local_pos  220.00 0.00  143.85}
+               {score.lbl           set_local_pos  220.00 0.00  187.85}
+               {band_meter_hud      set_local_pos -200.54 25.00 4.35}
+               {dynamic_leaderboard set_local_pos  295.00 25.00 2.51}
+               {delete overdrive.anim}
+               {with {dynamic_leaderboard find competitor_board_0}
+                  {gamertag_id.anim set_frame 0}
+                  {delete gamertag_id.anim}
+                  {gamertag_frame.mat set color 255}
+               }
+            }
+         )
+         (loop
+            {$this on_enter}
+            {$this update_item_vis}
+            {$this update_progress}
+            {$this update_timer}
+            {$this update_gold_stars}
+            {$this update_pb}
+         )
+         (update_item_vis
+            {progress_bar.sld set_showing $progressbar}
+            {streak.lbl set_showing $show_steak}
+            {timer.lbl set_showing $show_timer}
+            {inputs.lbl set_showing $input_viewer}
+         )
+         (entered FALSE)
+         (on_enter
+            {unless [entered]
+               {set [entered] TRUE}
+               {timer.tnm animate
+                  (units kTaskSeconds)
+                  (period 1)
+                  (range 0 1)
+               }
+               {$wtd animate_gems}
+            }
+         )
+         (update_progress
+            {progress_bar.sld set_current {int {* {[song_state] get song_ratio} 1000}}}
+         )
+         (update_timer
+            {do
+               ($beat {[song_state] get current_beat})
+               {timer.lbl set_token_fmt
+                  song_timer
+                  {seconds_to_time {beat_to_seconds {clamp 0 {end_of_song get end} $beat}}}
+                  {end_of_song get end_time}
+               }
+            }
+         )
+         (update_gold_stars
+            {if $goldprogress
+               {do
+                  ($stars {[player_state] get stars})
+                  {if {&& {> $stars 5} {< $stars 6}}
+                     {star_board iterate RndDir $r
+                        {{$r find star_frame.mat} set diffuse_tex
+                           {cond
+                              ({>= $stars 5.9} gstar9.tex)
+                              ({>= $stars 5.8} gstar8.tex)
+                              ({>= $stars 5.7} gstar7.tex)
+                              ({>= $stars 5.6} gstar6.tex)
+                              ({>= $stars 5.5} gstar5.tex)
+                              ({>= $stars 5.4} gstar4.tex)
+                              ({>= $stars 5.3} gstar3.tex)
+                              ({>= $stars 5.2} gstar2.tex)
+                              gstar1.tex
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+         )
+         (prev_range 0.50)
+         (pb_init FALSE)
+         (pbn FALSE)
+         (update_pb
+            {if {&& [pb] {! {is_online}}}
+               {do
+                  ($score {[player_state] get score})
+                  ($range {clamp {/ $score [pb]} 0 1})
+                  ($pa {dynamic_leaderboard find player_range.anim})
+                  ($ca {dynamic_leaderboard find competitor_0_range.anim})
+                  {unless {$pa is_animating}
+                     {$pa animate
+                        (units kTaskSeconds)
+                        (period 1)
+                        (range [prev_range] $range)
+                     }
+                     {set [prev_range] $range}
+                  }
+                  {unless [pb_init]
+                     {$ca animate
+                        (units kTaskSeconds)
+                        (period 1)
+                        (range 0.50 1)
+                     }
+                     {set [pb_init] TRUE}
+                  }
+                  {if {&& {! [pbn]} {> $score [pb]}}
+                     {set [pbn] TRUE}
+                     {dynamic_leaderboard player_won}
+                     {pb.tnm animate
+                        (units kTaskSeconds)
+                        (period 6)
+                        (range 0 1)
+                     }
+                  }
+               }
+            }
+         )
+      )
+   )
+)

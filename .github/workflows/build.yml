@@ -7,20 +7,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
       - name: Set env
         run: |
           chmod +x dependencies/linux/arkhelper
           chmod +x dependencies/linux/dtab
-      - name: Remove PS3 files
-        run: |
-          find . -name "*.*_ps3" -type f -delete
       - name: Build ARK
         run: |
-          dependencies/linux/arkhelper dir2ark ./_ark ./_build/xbox/gen -n "patch_xbox" -e -v 6 -s 4073741823
+          python _build_xbox.py
       
       - name: Upload result
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: RBBU-Xbox
           path: _build/xbox
@@ -29,20 +27,18 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v4
-      - name: Remove Xbox files
-        run: |
-          Get-ChildItem _ark/ -recurse -include *.*_xbox | remove-item
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
       - name: Build ARK
         run: |
-          dependencies/arkhelper.exe dir2ark _ark _build/ps3/USRDIR/gen -n "patch_ps3" -e -v 6 -s 4073741823
+          python _build_ps3.py
       - name: Build PKG
         run: |
           $sha_short="$(git rev-parse --short HEAD)".ToUpper()
           $content="UP8802-NPUB30749_00-RBBU00000"
           dependencies/ta_pkg_repacker_tools/make_package_npdrm_retail.exe --k-licensee 0x00000000000000000000000000000000 --content-id ($content + $sha_short) dependencies/ta_pkg_repacker_tools/usa/package.conf _build/ps3
       - name: Upload result
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: RBBU-PS3-USA
           path: '*.pkg'
@@ -51,13 +47,11 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v4
-      - name: Remove Xbox files
-        run: |
-          Get-ChildItem _ark/ -recurse -include *.*_xbox | remove-item
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
       - name: Build ARK
         run: |
-          dependencies/arkhelper.exe dir2ark _ark _build/ps3/USRDIR/gen -n "patch_ps3" -e -v 6 -s 4073741823
+          python _build_ps3.py
       - name: Build PKG
         run: |
           Remove-Item "_build\ps3\PARAM.SFO" -Force
@@ -68,7 +62,7 @@ jobs:
           $content="EP8802-NPEB00988_00-RBBU00000"
           dependencies/ta_pkg_repacker_tools/make_package_npdrm_retail.exe --k-licensee 0x00000000000000000000000000000000 --content-id ($content + $sha_short) dependencies/ta_pkg_repacker_tools/eur/package.conf _build/ps3
       - name: Upload result
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: RBBU-PS3-EUR
           path: '*.pkg'

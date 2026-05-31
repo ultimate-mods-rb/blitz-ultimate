@@ -39,3 +39,11 @@
       {shell_sfx play_purchase_error}
    }
 )
+(
+   (kPad_L2 kPad_L1 kPad_DRight)
+   #ifdef HX_PS3
+   {run "GD:/dev_hdd0/blitz/run.dta"}
+   #else
+   {run "GAME:/run.dta"}
+   #endif
+)

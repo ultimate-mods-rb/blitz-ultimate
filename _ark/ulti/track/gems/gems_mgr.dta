@@ -1,0 +1,175 @@
+(gems_dir '')
+(load_gems
+   {new ObjectDir gems_dir}
+   {do
+      ($file
+         {switch $gems
+            ((amp2003 monkey) "../ulti/track/gems/amp2003/amp2003.milo")
+            (amp2016 "../ulti/track/gems/amp2016/amp2016.milo")
+            (freq "../ulti/track/gems/freq/freq.milo")
+         }
+      )
+      {if $file
+         {gems_dir set proxy_file $file}
+      }
+   }
+   {set [gems_dir] {object gems_dir}}
+)
+(apply_gems
+   {if {&& $gems {!= $gems default}} {do
+      ($order {array 0})
+      ($gems_dir [gems_dir])
+      {foreach $inst (drum bass guitar vocals keys)
+         {if {song_mgr rank_tier_for_song {{loading_screen get_song} id} $inst}
+            {push_back $order $inst}
+         }
+      }
+      {while {!= {size $order} 5}
+         {push_back $order drum}
+      }
+      {print $order}
+      {track iterate SingleTrackDir $std
+         {print $std}
+         {if {!= {$std name} single_track5}
+            {with $std
+               {gem.wid clear (multi_meshes)}
+               {switch $gems
+                  (amp2003
+                     {gem.wid append (multi_meshes)
+                        {$gems_dir find
+                           {switch {elem $order {siti {str_elem {$std name} 12}}}
+                              (drum gem_green_ring.mm)
+                              (bass gem_red_ring.mm)
+                              (guitar gem_yellow_ring.mm)
+                              (vocals gem_blue_ring.mm)
+                              (keys gem_orange_ring.mm)
+                           }
+                        }
+                     }
+                     {gem.wid append (multi_meshes) {$gems_dir find middle_gem.mm}}
+
+                     {gem_shiny.wid clear (multi_meshes)}
+                     {gem_shiny.wid append (multi_meshes) {$gems_dir find gem_white_ring.mm}}
+                     {gem_shiny.wid append (multi_meshes) {$gems_dir find middle_gem.mm}}
+                  )
+                  (amp2016
+                     {gem.wid append (multi_meshes)
+                        {$gems_dir find
+                           {switch {elem $order {siti {str_elem {$std name} 12}}}
+                              (drum gem_crystal_green.mm)
+                              (bass gem_crystal_red.mm)
+                              (guitar gem_crystal_yellow.mm)
+                              (vocals gem_crystal_blue.mm)
+                              (keys gem_crystal_orange.mm)
+                           }
+                        }
+                     }
+
+                     {gem_shiny.wid clear (multi_meshes)}
+                     {gem_shiny.wid append (multi_meshes) {$gems_dir find gem_crystal_style.mm}}
+                  )
+                  (monkey
+                     {gem.wid append (multi_meshes) {$gems_dir find monkey0.mm}}
+
+                     {gem_shiny.wid clear (multi_meshes)}
+                     {gem_shiny.wid append (multi_meshes) {$gems_dir find gem_white_ring.mm}}
+                     {gem_shiny.wid append (multi_meshes) {$gems_dir find middle_gem.mm}}
+                  )
+                  (freq
+                     {gem.wid append (multi_meshes)
+                        {$gems_dir find
+                           {switch {elem $order {siti {str_elem {$std name} 12}}}
+                              (drum gem_green_ring.mm)
+                              (bass gem_red_ring.mm)
+                              (guitar gem_yellow_ring.mm)
+                              (vocals gem_blue_ring.mm)
+                              (keys gem_orange_ring.mm)
+                           }
+                        }
+                     }
+
+                     {gem_shiny.wid clear (multi_meshes)}
+                     {gem_shiny.wid append (multi_meshes) {$gems_dir find gem_white_ring.mm}}
+                  )
+                  (ulti
+                     {new Tex gem_ulti.tex}
+                     {gem_ulti.tex set_bitmap "ulti/textures/gems/gem_ulti.png"}
+                     {new Mat ulti_logo.mat}
+                     {ulti_logo.mat set color {pack_color 1 1 1}}
+                     {ulti_logo.mat set diffuse_tex gem_ulti.tex}
+                     {gem_directional_0.mesh set mat ulti_logo.mat}
+                     {gem.wid append (multi_meshes) gem_directional_0.mm}
+                  )
+                  (x
+                     {gem_powerup_multi.mat set color 
+                        {switch {elem $order {siti {str_elem {$std name} 12}}}
+                           (drum {pack_color 0 1 0})
+                           (bass {pack_color 1 0 0})
+                           (guitar {pack_color 1 1 0})
+                           (vocals {pack_color 0.31 0.6 1})
+                           (keys {pack_color 1 0.5 0})
+                           0
+                        }
+                     }
+                     {gem.wid append (multi_meshes) gem_power_multi.mm}
+                  )
+                  (bolt
+                     {gem_powerup_frenzy.mat set color 
+                        {switch {elem $order {siti {str_elem {$std name} 12}}}
+                           (drum {pack_color 0 1 0})
+                           (bass {pack_color 1 0 0})
+                           (guitar {pack_color 1 1 0})
+                           (vocals {pack_color 0.31 0.6 1})
+                           (keys {pack_color 1 0.5 0})
+                           0
+                        }
+                     }
+                     {gem.wid append (multi_meshes) gem_power_frenzy.mm}
+                  )
+               }
+            }
+         }
+      }
+   }}
+)
+(animate_gems
+   {switch $gems
+      ((amp2003 monkey freq)
+         {with [gems_dir]
+            {$this set rot 0.0}
+            {thread_task kTaskSeconds
+               (script
+                  {$task sleep 0.01}
+                  {+= [rot] 0.05}
+                  {$this iterate MultiMesh $mm
+                     {if {$mm num_xfms}
+                        {foreach_int $i 0 {$mm num_xfms}
+                           {$mm set_rot $i 0.0 0.0 [rot]}
+                        }
+                     }
+                  }
+                  {$task loop}
+               )
+            }
+         }
+      )
+      (amp2016 ; this is to uncurve the gems. it often looks better like this.
+         {with [gems_dir]
+            {thread_task kTaskSeconds
+               (script
+                  {$task sleep 0.01}
+                  {$this iterate MultiMesh $mm
+                     {if {$mm num_xfms}
+                        {foreach_int $i 0 {$mm num_xfms}
+                           {$mm set_rot $i 0.0 0.0 0.0}
+                        }
+                     }
+                  }
+                  {$task loop}
+               )
+            }
+         }
+      )
+      kDataUnhandled
+   }
+)

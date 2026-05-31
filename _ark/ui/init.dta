@@ -59,7 +59,6 @@
    #autorun {run ulti/ulti_init.dta}
    #autorun {run ulti/ulti_funcs.dta}
    #include ../ulti/mod_settings.dta
-   #include ../ulti/pers_tex.dta
    {ui set_sink shell_sfx}
    {platform_mgr set_notify_ui_location kOSNotifyBottomCenter}
    {new DataMineMgr data_mine_mgr}

@@ -283,37 +283,6 @@
       (kPad_RStickLeft "(")
    }
 }
-{func ulti_settings_writer
-   {write_file $ulti_settings_path
-      {array
-         (
-            (settings
-               (precision $freq_ms)
-               (disable_dof $disable_dof)
-               (which_skybox $which_skybox)
-               (controller_mapping {save_data get_controller_mapping})
-               (disable_random_wiggles $disable_random_wiggles)
-               (disable_plots $disable_plots)
-               (force_plot $forceplot)
-               #ifdef HX_PS3
-               (server_url $server_url)
-               (server_ssl $server_ssl)
-               (tbrb_dlc $p9dlc)
-               #endif
-            )
-            (hud
-               (hide_hud $hide_hud)
-               (gold_star_progress $goldprogress)
-               (song_progress_bar $progressbar)
-               (show_timer $show_timer)
-               (show_personal_best $show_pb)
-               (show_steak $show_steak)
-               (input_viewer $input_viewer)
-            )
-         )
-      }
-   }
-}
 {func cycle_int
    ($min $max $int)
    {+ $min {mod {+ {- $int $min} 1} {+ 1 {- $max $min}}}}
@@ -321,20 +290,14 @@
 {func seconds_to_time
    ($secs)
    {do
-      ($song_length $secs)
-      ($minutes)
-      ($seconds)
-      ($seconds_str)
-      {set $minutes {/ $song_length 60}}
-      {set $minutes {floor $minutes}}
-      {set $seconds {mod $song_length 60}}
-      {set $seconds {floor $seconds}}
-      {set $seconds_str
+      ($minutes {floor {/ $secs 60}})
+      ($seconds {floor {mod $secs 60}})
+      ($seconds_str
          {if_else {< $seconds 10}
             {sprintf "0%d" $seconds}
             {sprintf "%d" $seconds}
          }
-      }
+      )
       {sprintf "%d:%s" $minutes $seconds_str}
    }
 }
@@ -450,74 +413,7 @@
       $result
    }
 }
-{func load_gems
-   {unless {&& $gems_dir {== {$gems_dir get gems} $gems}}
-      {if $gems_dir
-         {delete $gems_dir}
-      }
-      {do
-         ($file
-            {switch $gems
-               ((amp2003 monkey) "ulti/track/gems/amp2003/amp2003.milo")
-               (amp2016 "ulti/track/gems/amp2016/amp2016.milo")
-               (freq "ulti/track/gems/freq/freq.milo")
-            }
-         )
-         {if $file
-            {set $gems_dir {load_objects $file}}
-            {if_else $gems_dir
-               {do
-                  {$gems_dir delete_loader}
-                  {$gems_dir set gems $gems}
-               }
-               {exit}
-            }
-         }
-      }
-   }
-}
-{func animate_gems
-   {switch $gems
-      ((amp2003 monkey freq)
-         {with $gems_dir
-            {$this set rot 0.0}
-            {thread_task kTaskSeconds
-               (script
-                  {$task sleep 0.01}
-                  {+= [rot] 0.05}
-                  {$this iterate MultiMesh $mm
-                     {if {$mm num_xfms}
-                        {foreach_int $i 0 {$mm num_xfms}
-                           {$mm set_rot $i 0.0 0.0 [rot]}
-                        }
-                     }
-                  }
-                  {$task loop}
-               )
-            }
-         }
-      )
-      (amp2016 ; this is to uncurve the gems. it often looks better like this.
-         {with $gems_dir
-            {thread_task kTaskSeconds
-               (script
-                  {$task sleep 0.01}
-                  {$this iterate MultiMesh $mm
-                     {if {$mm num_xfms}
-                        {foreach_int $i 0 {$mm num_xfms}
-                           {$mm set_rot $i 0.0 0.0 0.0}
-                        }
-                     }
-                  }
-                  {$task loop}
-               )
-            }
-         }
-      )
-      kDataUnhandled
-   }
-}
-{func print_ship
+{func print
    ($s)
    #ifdef HX_PS3
    {run {sprintf "GD:/%d    %s    %d" {random_int 100 1000} {sprint $s} {random_int 100 1000}}}

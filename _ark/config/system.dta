@@ -1,167 +1,161 @@
 (language
    (default eng)
-   (supported
-      (eng fre ita deu esl ptb))
-   (remap
-      (mex esl))
+   (supported (eng fre ita deu esl ptb))
+   (remap (mex esl))
    #ifndef _SHIP
-   (cheat_supported
-      (eng fre ita deu esl))
-   #endif)
+   (cheat_supported (eng fre ita deu esl))
+   #endif
+)
 (ng TRUE)
-(xbox_map_file
-   "%s/sync_xbox_%s.map")
+(xbox_map_file "%s/sync_xbox_%s.map")
 #ifdef HX_PS3
 (commerce_container TRUE)
 (init_https TRUE)
 (trophies TRUE)
-(np_communication_id
-   "NPWR03412_00")
+(np_communication_id "NPWR03412_00")
 (titles
    (band3
       (title_id
-         (live
-            "BLUS30463")
-         (test
-            "NPXX00000"))
+         (live "BLUS30463")
+         (test "NPXX00000")
+      )
       (service_id
-         (live
-            "UP8802-BLUS30463_00")
-         (test
-            "UP0006-NPXX00000_00")))
+         (live "UP8802-BLUS30463_00")
+         (test "UP0006-NPXX00000_00")
+      )
+   )
    (rb2
       (title_id
-         (live
-            "BLUS30147")
-         (test
-            "NPXX00360"))
+         (live "BLUS30147")
+         (test "NPXX00360")
+      )
       (service_id
-         (live
-            "UP0006-BLUS30147_00")
-         (test
-            "UP0006-NPXX00360_00")))
+         (live "UP0006-BLUS30147_00")
+         (test "UP0006-NPXX00360_00")
+      )
+   )
    (rb1
       (title_id
-         (live
-            "BLUS30050")
-         (test
-            "NPXX00202"))
+         (live "BLUS30050")
+         (test "NPXX00202")
+      )
       (service_id
-         (live
-            "UP0006-BLUS30050_00")
-         (test
-            "UD2464-NPXX00202_00")))
+         (live "UP0006-BLUS30050_00")
+         (test "UD2464-NPXX00202_00")
+      )
+   )
    #ifdef REGION_EUROPE ; the eu version will generate invalid global options or just terminate the game if sync isn't NPEB00988 so we have to do it like this 
    (sync
       (title_id
-         (live
-            "NPEB00988")
-         (test
-            "NPXX00000"))
+         (live "NPEB00988")
+         (test "NPXX00000")
+      )
       (service_id
-         (live
-            "EP8802-NPEB00988_00")
-         (test
-            "EP8802-NPEB00988_00")))
+         (live "EP8802-NPEB00988_00")
+         (test "EP8802-NPEB00988_00")
+      )
+   )
    (sync_us
       (title_id
-         (live
-            "NPUB30749")
-         (test
-            "NPXX00000"))
+         (live "NPUB30749")
+         (test "NPXX00000")
+      )
       (service_id
-         (live
-            "UP8802-NPUB30749_00")
-         (test
-            "UP0006-NPXX00000_00")))
+         (live "UP8802-NPUB30749_00")
+         (test "UP0006-NPXX00000_00")
+      )
+   )
    #else
    (sync
       (title_id
-         (live
-            "NPUB30749")
-         (test
-            "NPXX00000"))
+         (live "NPUB30749")
+         (test "NPXX00000")
+      )
       (service_id
-         (live
-            "UP8802-NPUB30749_00")
-         (test
-            "UP0006-NPXX00000_00")))
+         (live "UP8802-NPUB30749_00")
+         (test "UP0006-NPXX00000_00")
+      )
+   )
    (sync_eu
       (title_id
-         (live
-            "NPEB00988")
-         (test
-            "NPXX00000"))
+         (live "NPEB00988")
+         (test "NPXX00000")
+      )
       (service_id
-         (live
-            "EP8802-NPEB00988_00")
-         (test
-            "EP8802-NPEB00988_00")))
+         (live "EP8802-NPEB00988_00")
+         (test "EP8802-NPEB00988_00")
+      )
+   )
    #endif
    (band3_patch
       (title_id
-         (live
-            "BLES01611")
-         (test
-            "NPXX00000"))
+         (live "BLES01611")
+         (test "NPXX00000")
+      )
       (service_id
-         (live
-            "EP8802-BLES01611_00")
-         (test
-            "UP0006-NPXX00000_00")))
+         (live "EP8802-BLES01611_00")
+         (test "UP0006-NPXX00000_00")
+      )
+   )
    (band3_eu
       (title_id
-         (live
-            "BLES00986")
-         (test
-            "NPXX00000"))
+         (live "BLES00986")
+         (test "NPXX00000")
+      )
       (service_id
-         (live
-            "EP0006-BLES00986_00")
-         (test
-            "UP0006-NPXX00000_00")))
+         (live "EP0006-BLES00986_00")
+         (test "UP0006-NPXX00000_00")
+      )
+   )
    (rb2_eu
       (title_id
-         (live
-            "BLES00385")
-         (test
-            "BLES00385"))
+         (live "BLES00385")
+         (test "BLES00385")
+      )
       (service_id
-         (live
-            "EP0006-BLES00385_00")
-         (test
-            "EP0006-BLES00385_00")))
+         (live "EP0006-BLES00385_00")
+         (test "EP0006-BLES00385_00")
+      )
+   )
    (rb1_eu
       (title_id
-         (live
-            "BLES00228")
-         (test
-            "NPXX00202"))
+         (live "BLES00228")
+         (test "NPXX00202")
+      )
       (service_id
-         (live
-            "EP0006-BLES00228_00")
-         (test
-            "UD2464-NPXX00202_00")))
+         (live "EP0006-BLES00228_00")
+         (test "UD2464-NPXX00202_00")
+      )
+   )
    (proj9
       (title_id
          (live
-            {if_else $p9dlc "BLUS30282" "XXXXXXXXX"})
-         (test
-            "NPXX00511"))
+            {if_else $p9dlc
+               "BLUS30282"
+               "XXXXXXXXX"
+            }
+         )
+         (test "NPXX00511")
+      )
       (service_id
-         (live
-            "UP0006-BLUS30282_00")
-         (test
-            "UP8802-NPXX00511_00")))
+         (live "UP0006-BLUS30282_00")
+         (test "UP8802-NPXX00511_00")
+      )
+   )
    (proj9_eu
       (title_id
          (live
-            {if_else $p9dlc "BLES00532" "XXXXXXXXX"})
-         (test
-            "NPXX00583"))
+            {if_else $p9dlc
+               "BLES00532"
+               "XXXXXXXXX"
+            }
+         )
+         (test "NPXX00583")
+      )
       (service_id
-         (live
-            "EP0006-BLES00532_00")
-         (test
-            "UD2464-NPXX00583_00"))))
+         (live "EP0006-BLES00532_00")
+         (test "UD2464-NPXX00583_00")
+      )
+   )
+)
 #endif

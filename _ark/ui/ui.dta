@@ -32,7 +32,6 @@
    {challenge_request_panel load}
    {store_browser_panel load}
    {inbox_panel load}
-   {pers_tex load}
    #ifndef _SHIP
 
    #endif

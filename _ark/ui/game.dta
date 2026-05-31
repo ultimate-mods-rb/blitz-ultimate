@@ -88,7 +88,9 @@
    (blitz_hidden FALSE)
    (enter
       {if {! {{$this get_game} is_running}}
-         #include ../ulti/ulti_game_enter.dta
+         {career_results_panel set started_animation FALSE}
+         {$hud post_load}
+         {$wtd post_load}
          {{{$this get_game} get_hud_dir} set blitz_hidden [blitz_hidden]}
          {$this hide_pause}
          {apology_results_panel set

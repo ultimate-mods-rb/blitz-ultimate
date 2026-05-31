@@ -197,20 +197,12 @@
                {diff_meter_rnd set_showing TRUE}
                {$this set_current_song $selected_song}
                {$this update_album_art {$selected_song id}}
-               {set $cur_song_name {$selected_song title}} ; these maybe for a fake mtv_overlay at some point?
-               {set $cur_song_artist {$selected_song artist}}
-               {set $cur_song_short_name {$selected_song short_name}} ; so we can access it for screenshots
-               {set $cur_song_id {$selected_song id}}
-               {set $pb FALSE}
                {do
-                  ($score_data {find $scoresArray $cur_song_id})
+                  ($score_data {find_exists $scoresArray {$selected_song id}})
                   {if {&& {! $online} $score_data}
                      {difficulty_header.lbl set_token_fmt personal_best}
                      {title.lbl set_int {elem $score_data 1} TRUE}
                      {$this set_score_vis TRUE}
-                     {if $show_pb
-                        {set $pb {elem $score_data 1}}
-                     }
                   }
                }
                {artist.lbl set_artist_name_from_metadata $selected_song}
@@ -375,17 +367,6 @@
                   {do
                      ($song {$this play_random_song})
                      {loading_screen set_song $song}
-                     {set $cur_song_name {$song title}}
-                     {set $cur_song_artist {$song artist}}
-                     {set $cur_song_short_name {$song short_name}}
-                     {set $cur_song_id {$song id}}
-                     {set $pb FALSE}
-                     {do
-                        ($score_data {find $scoresArray $cur_song_id})
-                        {if {&& $show_pb $score_data}
-                           {set $pb {elem $score_data 1}}
-                        }
-                     }
                      #ifndef HX_PS3
                      {$this mount_current_content {$song id}}
                      #endif

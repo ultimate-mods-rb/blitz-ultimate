@@ -31,10 +31,6 @@
       {$this set_song {loading_screen get_song}}
       {$this set_album_art {{$this get_song} id}}
       {$this set_song_title {$this get_song} selection_title.lbl}
-      {set $cur_song_name {{$this get_song} title}}
-      {set $cur_song_artist {{$this get_song} artist}}
-      {set $cur_song_short_name {{$this get_song} short_name}}
-      {set $cur_song_id {{$this get_song} id}}
       {powerup_select.lst set_selected 0}
       {powerup_select.lst refresh}
       {{$this loaded_dir} set main_powerup_menu active}

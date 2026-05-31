@@ -443,11 +443,13 @@
    }
    {new MidiParser
       end_of_song
+      (end 0)
+      (end_time "0:00")
       (track_name EVENTS)
       (text
          {if {== $mp.val end}
-            {set $song_length_display {seconds_to_time {beat_to_seconds $mp.start}}}
-            {set $end_beat $mp.start}
+            {set [end_time] {seconds_to_time {beat_to_seconds $mp.start}}}
+            {set [end] $mp.start}
          }
          {if {&& {== $mp.val end} $banddirector}
             {$banddirector set_end {beat_to_seconds $mp.start}}

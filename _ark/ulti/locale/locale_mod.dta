@@ -68,6 +68,7 @@
 (new_pb "NEW PERSONAL BEST!")
 (your_best "Your Best")
 (song_timer "%s / %s")
+(song_artist_fmt "%s\n%s")
 (star0 "xxxxx")
 (star1 "5xxxx")
 (star2 "55xxx")
